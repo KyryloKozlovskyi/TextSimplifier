@@ -8,6 +8,12 @@ public class Runner {
 		// Load embeddings
 		embeddingProcessor.load("./embeddings.txt");
 		embeddingProcessor.debugPrint(embeddingProcessor.getEmbeddings().size());
+
+		// Load Google 1000
+		GoogleProcessor googleProcessor = new GoogleProcessor();
+		googleProcessor.load("./google-1000.txt");
+		googleProcessor.debugPrint(googleProcessor.getGoogleWords().size());
+
 		// System.out.println("Loaded embeddings: " +
 		// embeddingProcessor.getEmbeddings());
 		// You should put the following code into a menu or Menu class
