@@ -14,6 +14,11 @@ public class Runner {
 		googleProcessor.load("./google-1000.txt");
 		googleProcessor.debugPrint(googleProcessor.getGoogleWords().size());
 
+		// Load text
+		TextProcessor textProcessor = new TextProcessor();
+		textProcessor.load("./sampleText.txt");
+		textProcessor.debugPrint(textProcessor.getProcessedLines().size());
+
 		// System.out.println("Loaded embeddings: " +
 		// embeddingProcessor.getEmbeddings());
 		// You should put the following code into a menu or Menu class
