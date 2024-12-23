@@ -9,31 +9,30 @@ import java.util.concurrent.StructuredTaskScope;
 public abstract class AbstractProcessor implements Loader {
 
 	@Override
+	// Load the file and process each line concurrently using StructuredTaskScope
 	public void load(String filePath) throws IOException {
-		// Use try-with-resources to ensure the reader is closed
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
-				// Use Structured Concurrency
 				var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-
 			String line;
-
-			// Submit tasks to process each line
+			// Read each line and process it concurrently
 			while ((line = reader.readLine()) != null) {
 				String currentLine = line;
+				// Fork a new thread to process each line
 				scope.fork(() -> {
-					// Process the line
-					process(currentLine);
+					try {
+						process(currentLine);
+					} catch (Exception e) {
+						System.err.println("Failed to process line: " + currentLine + ". Error: " + e.getMessage());
+					}
 					return null;
 				});
 			}
-
-			scope.join(); // Wait for all tasks to complete
-			scope.throwIfFailed(); // Check for any exceptions
-
+			// Wait for all threads to finish
+			scope.join();
+			scope.throwIfFailed();
 		} catch (InterruptedException | ExecutionException e) {
-			// Restore interrupted status and log the exception
 			Thread.currentThread().interrupt();
-			System.err.println("Error: " + e.getMessage());
+			System.err.println("Error during file processing: " + e.getMessage());
 		}
 	}
 
