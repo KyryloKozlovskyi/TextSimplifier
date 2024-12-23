@@ -7,7 +7,7 @@ public class EmbeddingProcessor extends AbstractProcessor {
 
 	@Override
 	// Process each line of the embeddings file
-	protected void processLine(String line) {
+	protected void process(String line) {
 		String[] parts = line.split(",");
 		String word = parts[0];
 		// Extract the vector from the line
@@ -19,30 +19,6 @@ public class EmbeddingProcessor extends AbstractProcessor {
 		embeddings.put(word, vector);
 	}
 
-	// DEBUGGING
-	public void debugPrint(int limit) {
-		System.out.println("Debugging Embeddings:");
-		int count = 0;
-		for (var entry : embeddings.entrySet()) {
-			System.out.println(entry.getKey() + " -> " + vectorToString(entry.getValue()));
-			if (++count >= limit)
-				break;
-		}
-		System.out.println("Total embeddings loaded: " + embeddings.size());
-	}
-
-	private String vectorToString(double[] vector) {
-		StringBuilder sb = new StringBuilder("[");
-		for (int i = 0; i < vector.length; i++) {
-			sb.append(vector[i]);
-			if (i < vector.length - 1)
-				sb.append(", ");
-		}
-		sb.append("]");
-		return sb.toString();
-	}
-
-	// Getter for embeddings
 	public ConcurrentHashMap<String, double[]> getEmbeddings() {
 		return embeddings;
 	}

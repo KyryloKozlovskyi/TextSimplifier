@@ -22,7 +22,7 @@ public abstract class AbstractProcessor implements Loader {
 				String currentLine = line;
 				scope.fork(() -> {
 					// Process the line
-					processLine(currentLine);
+					process(currentLine);
 					return null;
 				});
 			}
@@ -38,5 +38,5 @@ public abstract class AbstractProcessor implements Loader {
 	}
 
 	// Abstract method to process each line
-	protected abstract void processLine(String line);
+	protected abstract void process(String line);
 }
