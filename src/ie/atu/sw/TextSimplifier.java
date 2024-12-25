@@ -1,42 +1,42 @@
 package ie.atu.sw;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.StructuredTaskScope;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TextSimplifier {
-	private final SimilarityFinder similarityFinder; // Dependency
 
-	// Constructor
+	private final SimilarityFinder similarityFinder;
+
 	public TextSimplifier(SimilarityFinder similarityFinder) {
 		this.similarityFinder = similarityFinder;
 	}
 
-	// Simplify text by replacing words with their most similar words from a target
-	public String simplifyText(String text, Map<String, double[]> allEmbeddings,
-			Map<String, double[]> targetEmbeddings) {
-		String[] words = text.split("\\s+");
-		String[] results = new String[words.length]; // Array to store results concurrently
-		// Process each word in parallel
-		try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-			for (int i = 0; i < words.length; i++) {
-				final int index = i; // Store index for lambda
-				scope.fork(() -> {
-					// Find the most similar word from the target embeddings
-					String word = words[index];
-					double[] embedding = allEmbeddings.get(word.toLowerCase());
-					// Store the result in the results array at the same indexes to maintain order
-					results[index] = (embedding != null) ? similarityFinder.findMostSimilar(embedding, targetEmbeddings)
-							: word;
-					return null;
-				});
-			}
-			scope.join();
-			scope.throwIfFailed();
-		} catch (InterruptedException | ExecutionException e) {
-			Thread.currentThread().interrupt();
-			System.err.println("Error during text simplification: " + e.getMessage());
+	public CopyOnWriteArrayList<String> simplifyLines(CopyOnWriteArrayList<String> lines,
+			Map<String, double[]> embeddings, Map<String, double[]> googleEmbeddings) {
+		CopyOnWriteArrayList<String> simplifiedLines = new CopyOnWriteArrayList<>();
+
+		for (String line : lines) {
+			String simplifiedLine = simplifyText(line, embeddings, googleEmbeddings);
+			simplifiedLines.add(simplifiedLine);
 		}
-		return String.join(" ", results).trim();
+
+		return simplifiedLines;
+	}
+
+	public String simplifyText(String line, Map<String, double[]> embeddings, Map<String, double[]> googleEmbeddings) {
+		String[] words = line.split("\\s+");
+		StringBuilder simplifiedLine = new StringBuilder();
+
+		for (String word : words) {
+			double[] embedding = embeddings.get(word.toLowerCase());
+			if (embedding != null) {
+				String mostSimilar = similarityFinder.findMostSimilar(embedding, googleEmbeddings);
+				simplifiedLine.append(mostSimilar != null ? mostSimilar : word).append(" ");
+			} else {
+				simplifiedLine.append(word).append(" ");
+			}
+		}
+
+		return simplifiedLine.toString().trim();
 	}
 }
