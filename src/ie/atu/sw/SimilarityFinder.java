@@ -16,21 +16,30 @@ public class SimilarityFinder {
 		this.algorithm = algorithm;
 	}
 
+	/**
+	 * Finds the most similar word to the target vector using the specified
+	 * algorithm.
+	 *
+	 * @param targetVector  The target vector to compare.
+	 * @param allEmbeddings A map of word embeddings.
+	 * @return The word with the highest similarity to the target vector.
+	 */
 	public String findMostSimilar(double[] targetVector, Map<String, double[]> allEmbeddings) {
-		final SimilarityResult result = new SimilarityResult(); // Shared result object
+		final SimilarityResult result = new SimilarityResult();
 
 		try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 			allEmbeddings.forEach((word, vector) -> scope.fork(() -> {
-				double similarity = (algorithm == SimilarityAlgorithm.COSINE)
-						? calculateCosineSimilarity(targetVector, vector)
-						: calculateEuclideanDistance(targetVector, vector);
+				double similarity = switch (algorithm) {
+				case COSINE -> calculateCosineSimilarity(targetVector, vector);
+				case EUCLIDEAN -> calculateEuclideanDistance(targetVector, vector);
+				};
 
-				result.updateIfBetter(word, similarity, algorithm);
+				result.updateIfBetter(word, similarity);
 				return null;
 			}));
 
-			scope.join();
-			scope.throwIfFailed();
+			scope.join(); // Wait for all tasks to complete
+			scope.throwIfFailed(); // Propagate exceptions if any
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
 			System.err.println("Error during similarity calculation: " + e.getMessage());
@@ -48,7 +57,7 @@ public class SimilarityFinder {
 			normB += vector2[i] * vector2[i];
 		}
 
-		return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+		return (normA == 0 || normB == 0) ? 0.0 : dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 	}
 
 	private double calculateEuclideanDistance(double[] vector1, double[] vector2) {
@@ -61,11 +70,12 @@ public class SimilarityFinder {
 		return Math.sqrt(sumOfSquares);
 	}
 
-	private static class SimilarityResult {
+	private class SimilarityResult {
 		private volatile String bestWord = null;
-		private volatile double bestScore = Double.MAX_VALUE;
+		private volatile double bestScore = (algorithm == SimilarityAlgorithm.COSINE) ? Double.NEGATIVE_INFINITY
+				: Double.POSITIVE_INFINITY;
 
-		public synchronized void updateIfBetter(String word, double score, SimilarityAlgorithm algorithm) {
+		public synchronized void updateIfBetter(String word, double score) {
 			boolean isBetter = (algorithm == SimilarityAlgorithm.COSINE && score > bestScore)
 					|| (algorithm == SimilarityAlgorithm.EUCLIDEAN && score < bestScore);
 
