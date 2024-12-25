@@ -82,7 +82,6 @@ public class Runner {
 		System.out.println(ConsoleColour.RESET);
 	}
 
-	// Execute the text simplification
 	private static void executeSimplification(String embeddingsFile, String googleWordsFile, String inputTextFile,
 			String outputFile) {
 		if (embeddingsFile == null || googleWordsFile == null || inputTextFile == null) {
@@ -91,41 +90,35 @@ public class Runner {
 			return;
 		}
 
+		SimilarityFinder.SimilarityAlgorithm algorithm = chooseSimilarityAlgorithm();
+
 		try {
 			System.out.println(ConsoleColour.BLUE + "Loading embeddings..." + ConsoleColour.RESET);
-			// Create an EmbeddingProcessor object and load the embeddings file
 			EmbeddingProcessor embeddingProcessor = new EmbeddingProcessor();
 			embeddingProcessor.load(embeddingsFile);
 
 			System.out.println(ConsoleColour.BLUE + "\nLoading Google-1000 words..." + ConsoleColour.RESET);
-			// Create a GoogleProcessor object and load the Google-100
 			GoogleProcessor googleProcessor = new GoogleProcessor();
 			googleProcessor.load(googleWordsFile);
 
 			System.out.println(ConsoleColour.BLUE + "\nMapping embeddings..." + ConsoleColour.RESET);
-			// Create a Mapper object and generate the mapping between embeddings and
-			// Google-1000 words
 			Mapper mapper = new Mapper();
 			var googleEmbeddings = mapper.generateMapping(embeddingProcessor.getEmbeddings(),
 					googleProcessor.getGoogleWords());
 
 			System.out.println(ConsoleColour.BLUE + "\nLoading input text..." + ConsoleColour.RESET);
-			// Create a TextProcessor object and load the input text file
 			TextProcessor textProcessor = new TextProcessor();
 			textProcessor.load(inputTextFile);
 
-			System.out.println(ConsoleColour.BLUE + "\nSimplifying text..." + ConsoleColour.RESET);
-			// Create a SimilarityFinder object, a TextSimplifier object and simplify the
-			// text
-			SimilarityFinder similarityFinder = new SimilarityFinder();
+			System.out.println(ConsoleColour.BLUE + "\nSimplifying text using " + algorithm + " similarity..."
+					+ ConsoleColour.RESET);
+			SimilarityFinder similarityFinder = new SimilarityFinder(algorithm);
 			TextSimplifier textSimplifier = new TextSimplifier(similarityFinder);
 
-			// Simplify the text
 			CopyOnWriteArrayList<String> simplifiedLines = textSimplifier.simplifyLines(
 					textProcessor.getProcessedLines(), embeddingProcessor.getEmbeddings(), googleEmbeddings);
 
 			System.out.println(ConsoleColour.BLUE + "\nSaving simplified text..." + ConsoleColour.RESET);
-			// Save the simplified text to the output file
 			TextProcessor.saveToFile(outputFile, simplifiedLines);
 
 			System.out.println(
@@ -133,5 +126,19 @@ public class Runner {
 		} catch (Exception e) {
 			System.err.println(ConsoleColour.RED + "An error occurred: " + e.getMessage() + ConsoleColour.RESET);
 		}
+	}
+
+	private static SimilarityFinder.SimilarityAlgorithm chooseSimilarityAlgorithm() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println(ConsoleColour.YELLOW + "\nChoose Similarity Algorithm:" + ConsoleColour.RESET);
+		System.out.println("(1) Cosine Similarity");
+		System.out.println("(2) Euclidean Distance");
+		System.out.print("Select Option [1-2]: ");
+
+		int choice = scanner.nextInt();
+		scanner.nextLine();
+
+		return (choice == 1) ? SimilarityFinder.SimilarityAlgorithm.COSINE
+				: SimilarityFinder.SimilarityAlgorithm.EUCLIDEAN;
 	}
 }
