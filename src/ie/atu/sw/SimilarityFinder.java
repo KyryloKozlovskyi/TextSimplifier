@@ -1,6 +1,6 @@
 package ie.atu.sw;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 
@@ -24,7 +24,7 @@ public class SimilarityFinder {
 	 * @param allEmbeddings A map of word embeddings.
 	 * @return The word with the highest similarity to the target vector.
 	 */
-	public String findMostSimilar(double[] targetVector, Map<String, double[]> allEmbeddings) {
+	public String findMostSimilar(double[] targetVector, ConcurrentHashMap<String, double[]> allEmbeddings) {
 		final SimilarityResult result = new SimilarityResult();
 
 		try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {

@@ -1,14 +1,14 @@
 package ie.atu.sw;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 
 public class Mapper {
 	// Generate mapping between words and their embeddings
-	public ConcurrentHashMap<String, double[]> generateMapping(Map<String, double[]> embeddings, Set<String> words) {
+	public ConcurrentHashMap<String, double[]> generateMapping(ConcurrentHashMap<String, double[]> embeddings,
+			CopyOnWriteArraySet<String> words) {
 		// Create a concurrent hash map to store the embeddings
 		ConcurrentHashMap<String, double[]> googleEmbeddings = new ConcurrentHashMap<>();
 		// Use structured concurrency to process words and map them to their embeddings

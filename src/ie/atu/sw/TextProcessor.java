@@ -4,28 +4,40 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.StructuredTaskScope;
 
 public class TextProcessor extends AbstractProcessor {
 	private final CopyOnWriteArrayList<String> processedLines = new CopyOnWriteArrayList<>();
 
 	@Override
-	// Process the line by converting it to lowercase
 	protected void process(String line) {
 		processedLines.add(line.toLowerCase());
 	}
 
-	// Get a copy of the processed lines
 	public CopyOnWriteArrayList<String> getProcessedLines() {
 		return new CopyOnWriteArrayList<>(processedLines);
 	}
 
-	// Save the processed lines to a file
 	public static void saveToFile(String filePath, CopyOnWriteArrayList<String> text) throws IOException {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+				var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+
 			for (String line : text) {
-				writer.write(line);
-				writer.newLine();
+				scope.fork(() -> {
+					synchronized (writer) {
+						writer.write(line);
+						writer.newLine();
+					}
+					return null;
+				});
 			}
+
+			scope.join(); // Wait for all tasks to complete
+			scope.throwIfFailed(); // Propagate exceptions if any
+		} catch (InterruptedException | ExecutionException e) {
+			Thread.currentThread().interrupt();
+			throw new IOException("Error while saving file: " + e.getMessage(), e);
 		}
 	}
 }
