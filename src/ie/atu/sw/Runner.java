@@ -19,10 +19,10 @@ public class Runner {
 		Scanner scanner = new Scanner(System.in);
 
 		// Default file paths with options for user input
-		String embeddingsFile = "./embeddings.txt";
-		String googleWordsFile = "./google-1000.txt";
-		String inputTextFile = "./sampleText.txt";
-		String outputFile = "./output.txt";
+		String embeddingsFile = null;
+		String googleWordsFile = null;
+		String inputTextFile = null;
+		String outputFile = null;
 
 		// Infinite loop to display the menu until the user chooses to quit
 		while (true) {
