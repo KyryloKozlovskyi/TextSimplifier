@@ -35,12 +35,10 @@ When Executing Simplification choose a Similarity Comparison Algorithm:
 ### Note! You have to make sure the Embeddings file path, Google-1000 file path, Input Text file path, Output file path are specified and then select Similarity Comparison Algorithm to run the text simplification.
    
 ## Features
-- **Virtual Threaded Processing** - Uses structured concurrency and virtual threads for efficient text simplification.
+- **Virtual Threads** - Uses structured concurrency and virtual threads for efficient text simplification.
 
 - **Customizable Settings** - Allows users to specify file paths, similarity algorithms, and input/output files through a command-line menu.
 
 - **Multiple Similarity Algorithms** - Supports Cosine Similarity and Euclidean Distance for word comparison.
 
-- **Dynamic Text Simplification** - Replaces words in the input text with their most similar counterparts from the Google-1000 word list.
-
-- **Thread-Safe Operations** - Utilizes concurrent data structures for safe and efficient processing.
+- **Thread-Safe** - Utilizes concurrent data structures for safe processing.
