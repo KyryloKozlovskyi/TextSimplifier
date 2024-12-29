@@ -32,7 +32,7 @@ When Executing Simplification choose a Similarity Comparison Algorithm:
 1. Enter 1 - to Select Cosine Similarity.
 2. Enter 2 - to Select Euclidean Distance.
 
-### Note! You have to make sure the Embeddings file path, Google-1000 file path, Input Text file path, Output file path are specified and then select Similarity Comparison Algorithm before running the text simplification.
+### Note! You have to make sure the Embeddings file path, Google-1000 file path, Input Text file path, Output file path are specified and then select Similarity Comparison Algorithm to run the text simplification.
    
 ## Features
 - **Virtual Threaded Processing** - Uses structured concurrency and virtual threads for efficient text simplification.
