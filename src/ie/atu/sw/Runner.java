@@ -82,7 +82,7 @@ public class Runner {
 		System.out.println("(1) Specify Embeddings File");
 		System.out.println("(2) Specify Google 1000 File");
 		System.out.println("(3) Specify Input Text File");
-		System.out.println("(4) Specify Output File (default: ./out.txt)");
+		System.out.println("(4) Specify Output File");
 		System.out.println("(5) Execute Simplification");
 		System.out.println("(6) Quit");
 		System.out.println(ConsoleColour.RESET);
