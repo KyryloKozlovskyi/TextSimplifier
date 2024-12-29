@@ -17,13 +17,13 @@ public class Mapper {
 	 * This method processes the given set of words and retrieves their
 	 * corresponding embeddings from the provided map. It uses structured
 	 * concurrency to handle each word in parallel.
+	 * 
+	 * Running time: O(n), where n is the number of words in the input set.
 	 *
 	 * @param embeddings The map of all embeddings, where keys are words and values
 	 *                   are their vector representations.
 	 * @param words      The set of words to map to their embeddings.
 	 * @return A map containing the words and their corresponding embeddings.
-	 *
-	 *         Running time: O(n), where n is the number of words in the input set.
 	 */
 	public ConcurrentHashMap<String, double[]> generateMapping(ConcurrentHashMap<String, double[]> embeddings,
 			CopyOnWriteArraySet<String> words) {

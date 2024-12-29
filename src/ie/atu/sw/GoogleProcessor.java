@@ -11,10 +11,10 @@ public class GoogleProcessor extends AbstractProcessor {
 
 	/**
 	 * Processes a single line from the Google-1000 word list.
+	 * 
+	 * Running time: O(1).
 	 *
 	 * @param line A single line from the Google-1000 file.
-	 *
-	 *             Running time: O(1).
 	 */
 	@Override
 	protected void process(String line) {
@@ -23,10 +23,10 @@ public class GoogleProcessor extends AbstractProcessor {
 
 	/**
 	 * Returns a copy of the googleWords set.
-	 *
+	 * 
+	 * Running time: O(n), where n is the number of words in the set.
+	 * 
 	 * @return A copy of the googleWords set.
-	 *
-	 *         Running time: O(n), where n is the number of words in the set.
 	 */
 	public CopyOnWriteArraySet<String> getGoogleWords() {
 		return new CopyOnWriteArraySet<>(googleWords);

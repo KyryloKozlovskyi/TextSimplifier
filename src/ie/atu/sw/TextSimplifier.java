@@ -30,15 +30,15 @@ public class TextSimplifier {
 	 *
 	 * Each line is processed in a separate virtual thread, and words are replaced
 	 * with their most similar equivalents based on the provided embeddings.
+	 * 
+	 * Running time: O(n * m), where n is the number of lines, m is the average
+	 * number of words per line, assuming the embeddings map stays the same and the
+	 * vector dimensionality does not change.
 	 *
 	 * @param lines            The lines of text to simplify.
 	 * @param embeddings       The map of all embeddings.
 	 * @param googleEmbeddings The map of Google-1000 embeddings.
 	 * @return A list of simplified text lines.
-	 *
-	 *         Running time: O(n * m), where n is the number of lines, m is the
-	 *         average number of words per line, considering the embeddings map
-	 *         stays the same and the vector dimensionality does not change.
 	 */
 	public CopyOnWriteArrayList<String> simplifyLines(CopyOnWriteArrayList<String> lines,
 			ConcurrentHashMap<String, double[]> embeddings, ConcurrentHashMap<String, double[]> googleEmbeddings) {
@@ -68,14 +68,14 @@ public class TextSimplifier {
 	 *
 	 * Each word in the line is processed in a separate virtual thread, and replaced
 	 * with the most similar word from the Google-1000 embeddings.
+	 * 
+	 * Running time: O(n), where n is the number of words in the line, assuming the
+	 * dimensionality of the embeddings stays the same.
 	 *
 	 * @param line             The line to simplify.
 	 * @param embeddings       The map of all embeddings.
 	 * @param googleEmbeddings The map of Google-1000 embeddings.
 	 * @return The simplified line.
-	 *
-	 *         Running time: O(n), where n is the number of words in the line,
-	 *         considering the dimensionality of the embeddings stays the same.
 	 */
 	public String simplifyText(String line, ConcurrentHashMap<String, double[]> embeddings,
 			ConcurrentHashMap<String, double[]> googleEmbeddings) {

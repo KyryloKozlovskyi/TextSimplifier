@@ -15,11 +15,10 @@ public class EmbeddingProcessor extends AbstractProcessor {
 	 * Each line is split into a word and its corresponding vector components. The
 	 * word is used as the key, and the vector is stored as a double array in the
 	 * embeddings map.
+	 * 
+	 * Running time: O(n), where n is the number of components in the vector.
 	 *
 	 * @param line A single line from the embeddings file.
-	 *
-	 *             Running time: O(n), where n is the number of components in the
-	 *             vector.
 	 */
 	@Override
 	protected void process(String line) {
@@ -35,10 +34,10 @@ public class EmbeddingProcessor extends AbstractProcessor {
 
 	/**
 	 * Returns a copy of the embeddings map.
+	 * 
+	 * Running time: O(n), where n is the number of entries in the map.
 	 *
 	 * @return A copy of the embeddings map.
-	 *
-	 *         Running time: O(n), where n is the number of entries in the map.
 	 */
 	public ConcurrentHashMap<String, double[]> getEmbeddings() {
 		return new ConcurrentHashMap<>(embeddings);

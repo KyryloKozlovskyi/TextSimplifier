@@ -18,12 +18,11 @@ public abstract class AbstractProcessor implements Loader {
 	 *
 	 * Each line of the file is read and processed in a separate virtual thread.
 	 * Structured concurrency ensures all tasks are managed properly.
+	 * 
+	 * Running time: O(n), where n is the number of lines in the file.
 	 *
 	 * @param filePath The path to the file to be processed.
 	 * @throws IOException If an error occurs while reading the file.
-	 *
-	 *                     Running time: O(n), where n is the number of lines in the
-	 *                     file.
 	 */
 	@Override
 	public void load(String filePath) throws IOException {
@@ -58,8 +57,6 @@ public abstract class AbstractProcessor implements Loader {
 	 * this method to define how each line should be handled.
 	 *
 	 * @param line A single line from the file.
-	 *
-	 *             Running time: Implementation-specific.
 	 */
 	protected abstract void process(String line);
 }

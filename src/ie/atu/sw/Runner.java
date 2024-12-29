@@ -14,8 +14,6 @@ public class Runner {
 
 	/**
 	 * The main method initiates the CLI and handles user interactions.
-	 *
-	 * @param args Command-line arguments (not used in this application).
 	 */
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
